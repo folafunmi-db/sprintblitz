@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 import { Pathway_Extreme } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -16,6 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      {/*
       <link
         rel="apple-touch-icon"
         sizes="180x180"
@@ -37,9 +39,13 @@ export default function RootLayout({
       <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
       <meta name="msapplication-TileColor" content="#da532c" />
       <meta name="theme-color" content="#ffffff" />
-      <body className={pathway.className}>
+			*/}
+      <body
+        className={`${pathway.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 `}
+      >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
