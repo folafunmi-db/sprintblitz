@@ -1,9 +1,13 @@
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { Pathway_Extreme } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 
-const pathway = Pathway_Extreme({ subsets: ["latin"], display: "swap" });
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata = {
   title: "Adonis",
@@ -41,7 +45,7 @@ export default function RootLayout({
       <meta name="theme-color" content="#ffffff" />
 			*/}
       <body
-        className={`${pathway.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 `}
+        className={`${poppins.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 `}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
