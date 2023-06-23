@@ -17,12 +17,19 @@ import {
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { v5 } from "uuid";
+import { copyToClipboard, getCurrentURL } from "@/lib/utils";
 
 export default function Home() {
   const router = useRouter();
   const [room, setRoom] = React.useState("");
   const [show, setShow] = React.useState(false);
+
+  const currentUrl = getCurrentURL();
   const { toast } = useToast();
+
+  const roomId = v5(room, v5.URL);
+  const roomRoute = `/room?id=${roomId}&name=${room}`;
+  const roomUrl = `${currentUrl}${roomRoute}`;
 
   return (
     <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4">
@@ -64,8 +71,8 @@ export default function Home() {
                     <span className="font-normal">{room}</span>
                   </div>
                   <div className="flex font-semibold justify-start items-start space-x-2">
-                    <p className="whitespace-nowrap">Room id:</p>{" "}
-                    <span className="font-normal">{v5(room, v5.URL)}</span>
+                    <p className="whitespace-nowrap">Room ID:</p>{" "}
+                    <span className="font-normal">{roomId}</span>
                   </div>
                 </div>
                 <DialogFooter className="flex w-full">
@@ -73,10 +80,20 @@ export default function Home() {
                     variant={"secondary"}
                     type="button"
                     className="flex-1"
+                    onClick={() => {
+                      copyToClipboard(roomUrl);
+                      toast({ description: "Copied room link!" });
+                    }}
                   >
                     Copy link
                   </Button>
-                  <Button type="button" className="flex-1">
+                  <Button
+                    type="button"
+                    className="flex-1"
+                    onClick={() => {
+                      router.push(roomRoute);
+                    }}
+                  >
                     Go to room
                   </Button>
                 </DialogFooter>
