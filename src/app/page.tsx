@@ -18,7 +18,8 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { v5 } from "uuid";
 import { copyToClipboard, getCurrentURL } from "@/lib/utils";
-import { ArrowUpRight, BadgePlus, Copy } from "lucide-react";
+import { ArrowUpRight, Copy, Plus } from "lucide-react";
+import { useGlobalStore } from "@/store";
 
 export default function Home() {
   const router = useRouter();
@@ -31,6 +32,8 @@ export default function Home() {
   const roomId = v5(room, v5.URL);
   const roomRoute = `/room?id=${roomId}&name=${room}`;
   const roomUrl = `${currentUrl}${roomRoute}`;
+
+  const createRoom = useGlobalStore((state) => state.addRoom);
 
   return (
     <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4">
@@ -58,9 +61,38 @@ export default function Home() {
 
             <Dialog open={show} onOpenChange={setShow}>
               <DialogTrigger asChild disabled={!room}>
-                <Button className="space-x-1" type="button" disabled={!room}>
+                <Button
+                  className="space-x-1"
+                  type="button"
+                  disabled={!room}
+                  onClick={() => {
+                    console.log({
+                      closedAt: null,
+                      createdAt: new Date(Date.now()),
+                      id: roomId,
+                      link: roomUrl,
+                      members: [],
+                      moderator: [],
+                      name: room,
+                      numberOfMembers: 0,
+                      scope: "public",
+                    });
+
+                    createRoom({
+                      closedAt: null,
+                      createdAt: new Date(Date.now()),
+                      id: roomId,
+                      link: roomUrl,
+                      members: [],
+                      moderator: [],
+                      name: room,
+                      numberOfMembers: 0,
+                      scope: "public",
+                    });
+                  }}
+                >
                   <span>Create </span>
-                  <BadgePlus />
+                  <Plus height={16} width={16} />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -68,13 +100,13 @@ export default function Home() {
                   <DialogTitle>Room Details</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col justify-start items-start gap-4 py-4">
-                  <div className="flex font-semibold justify-start items-start space-x-2">
+                  <div className="flex font-semibold justify-start items-center space-x-2">
                     <p className="whitespace-nowrap">Room name:</p>{" "}
-                    <span className="font-normal">{room}</span>
+                    <span className="font-normal text-sm">{room}</span>
                   </div>
-                  <div className="flex font-semibold justify-start items-start space-x-2">
+                  <div className="flex font-semibold justify-start items-center space-x-2">
                     <p className="whitespace-nowrap">Room ID:</p>{" "}
-                    <span className="font-normal">{roomId}</span>
+                    <span className="font-normal text-sm">{roomId}</span>
                   </div>
                 </div>
                 <DialogFooter className="flex w-full">
@@ -88,7 +120,7 @@ export default function Home() {
                     }}
                   >
                     <span>Copy link</span>
-                    <Copy />
+                    <Copy height={16} width={16} />
                   </Button>
                   <Button
                     type="button"
@@ -98,7 +130,7 @@ export default function Home() {
                     }}
                   >
                     <span>Go to room</span>
-                    <ArrowUpRight />
+                    <ArrowUpRight height={16} width={16} />
                   </Button>
                 </DialogFooter>
               </DialogContent>

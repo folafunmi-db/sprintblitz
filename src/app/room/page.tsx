@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Balancer from "react-wrap-balancer";
 import * as React from "react";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { DoorOpen, LogIn, MoveLeft } from "lucide-react";
 
 export default function Room({
   params,
@@ -66,11 +66,14 @@ export default function Room({
               }}
             >
               <span>Enter</span>
-              <LogIn />
+              <LogIn height={16} width={16} />
             </Button>
           </div>
           <Link href={"/"}>
-            <Button variant={"link"}>No, I want to go back!</Button>
+            <Button variant={"link"} className="space-x-4">
+              <DoorOpen height={16} width={16} className="mx-2" />
+              No, I want to go home!
+            </Button>
           </Link>
         </div>
       </div>

@@ -7,9 +7,9 @@ export const Nav = () => {
     <div className="w-full flex justify-between items-center">
       <Link
         href={"/"}
-        className="text-xl flex justify-start items-center gap-2 font-medium"
+        className="text-xl flex justify-start items-center gap-0 font-medium"
       >
-        <Logo /> Adonis
+        <Logo showBg={false} /> Adonis
       </Link>
       <ModeToggle />
     </div>
