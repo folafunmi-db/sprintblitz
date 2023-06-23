@@ -14,9 +14,9 @@ export const copyToClipboard = (text: string) => {
 };
 
 export function getCurrentURL() {
-  if (typeof window !== undefined) {
+  if (typeof window !== "undefined") {
     return window.location.origin;
   } else {
-    return null;
+    return "";
   }
 }
