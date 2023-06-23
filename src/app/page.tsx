@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 import { v5 } from "uuid";
 import { copyToClipboard, getCurrentURL } from "@/lib/utils";
+import { ArrowUpRight, BadgePlus, Copy } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
@@ -57,8 +58,9 @@ export default function Home() {
 
             <Dialog open={show} onOpenChange={setShow}>
               <DialogTrigger asChild disabled={!room}>
-                <Button type="button" disabled={!room}>
-                  Create
+                <Button className="space-x-1" type="button" disabled={!room}>
+                  <span>Create </span>
+                  <BadgePlus />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -79,22 +81,24 @@ export default function Home() {
                   <Button
                     variant={"secondary"}
                     type="button"
-                    className="flex-1"
+                    className="flex-1 space-x-1"
                     onClick={() => {
                       copyToClipboard(roomUrl);
                       toast({ description: "Copied room link!" });
                     }}
                   >
-                    Copy link
+                    <span>Copy link</span>
+                    <Copy />
                   </Button>
                   <Button
                     type="button"
-                    className="flex-1"
+                    className="flex-1 space-x-1"
                     onClick={() => {
                       router.push(roomRoute);
                     }}
                   >
-                    Go to room
+                    <span>Go to room</span>
+                    <ArrowUpRight />
                   </Button>
                 </DialogFooter>
               </DialogContent>

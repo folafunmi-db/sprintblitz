@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Balancer from "react-wrap-balancer";
 import * as React from "react";
 import Link from "next/link";
+import { LogIn } from "lucide-react";
 
 export default function Room({
   params,
@@ -59,12 +60,13 @@ export default function Room({
             />
             <Button
               type="button"
-              className="flex-1"
+              className="flex-1 space-x-1"
               onClick={() => {
                 handleJoin();
               }}
             >
-              Enter
+              <span>Enter</span>
+              <LogIn />
             </Button>
           </div>
           <Link href={"/"}>
