@@ -40,7 +40,7 @@ export default function Home() {
           <div className="mx-auto grid place-items-center">
             <Logo width="200" height="200" showBg={false} />
           </div>
-          <Balancer>Planning a sprint? Here, create a room.</Balancer>
+          <Balancer>Planning a sprint? Create a room here.</Balancer>
           <div className="mx-auto my-10 flex w-full max-w-sm items-center space-x-2">
             <Input
               name="room-name"
