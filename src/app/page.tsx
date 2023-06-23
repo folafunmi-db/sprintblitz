@@ -24,14 +24,17 @@ import { useGlobalStore } from "@/store";
 export default function Home() {
   const router = useRouter();
   const [room, setRoom] = React.useState("");
+  const [userName, setUserName] = React.useState("");
   const [show, setShow] = React.useState(false);
 
   const currentUrl = getCurrentURL();
   const { toast } = useToast();
 
   const roomId = v5(room, v5.URL);
-  const roomRoute = `/room?id=${roomId}&name=${room}`;
+  const joinRoute = `/join?id=${roomId}&name=${room}`;
+  const roomRoute = `/room?id=${roomId}&name=${room}&user=${userName}`;
   const roomUrl = `${currentUrl}${roomRoute}`;
+  const joinUrl = `${currentUrl}${joinRoute}`;
 
   const createRoom = useGlobalStore((state) => state.addRoom);
 
@@ -44,7 +47,21 @@ export default function Home() {
             <Logo width="200" height="200" showBg={false} />
           </div>
           <Balancer>Planning a sprint? Create a room here.</Balancer>
-          <div className="mx-auto my-10 flex w-full max-w-sm items-center space-x-2">
+          <div className="mx-auto my-10 flex w-full max-w-md items-center space-x-2">
+            <Input
+              name="user-name"
+              placeholder="Your name"
+              value={userName}
+              onChange={(e) => {
+                setUserName(e.target.value);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !!userName && !!room) {
+                  setShow(true);
+                }
+              }}
+            />
+
             <Input
               name="room-name"
               placeholder="Room name"
@@ -53,7 +70,7 @@ export default function Home() {
                 setRoom(e.target.value);
               }}
               onKeyDown={(event) => {
-                if (event.key === "Enter" && !!room) {
+                if (event.key === "Enter" && !!userName && !!room) {
                   setShow(true);
                 }
               }}
@@ -66,18 +83,6 @@ export default function Home() {
                   type="button"
                   disabled={!room}
                   onClick={() => {
-                    console.log({
-                      closedAt: null,
-                      createdAt: new Date(Date.now()),
-                      id: roomId,
-                      link: roomUrl,
-                      members: [],
-                      moderator: [],
-                      name: room,
-                      numberOfMembers: 0,
-                      scope: "public",
-                    });
-
                     createRoom({
                       closedAt: null,
                       createdAt: new Date(Date.now()),
@@ -101,6 +106,10 @@ export default function Home() {
                 </DialogHeader>
                 <div className="flex flex-col justify-start items-start gap-4 py-4">
                   <div className="flex font-semibold justify-start items-center space-x-2">
+                    <p className="whitespace-nowrap">Your name:</p>{" "}
+                    <span className="font-normal text-sm">{userName}</span>
+                  </div>
+                  <div className="flex font-semibold justify-start items-center space-x-2">
                     <p className="whitespace-nowrap">Room name:</p>{" "}
                     <span className="font-normal text-sm">{room}</span>
                   </div>
@@ -115,7 +124,7 @@ export default function Home() {
                     type="button"
                     className="flex-1 space-x-1"
                     onClick={() => {
-                      copyToClipboard(roomUrl);
+                      copyToClipboard(joinUrl);
                       toast({ description: "Copied room link!" });
                     }}
                   >
