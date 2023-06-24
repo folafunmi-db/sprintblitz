@@ -9,7 +9,7 @@ export const Nav = () => {
         href={"/"}
         className="text-xl flex justify-start items-center gap-0 font-medium"
       >
-        <Logo showBg={false} /> Adonis
+        <Logo showBg={false} /> Sprintly
       </Link>
       <ModeToggle />
     </div>

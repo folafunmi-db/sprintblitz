@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Adonis",
+  title: "Sprintly",
   description: "Sprint planning app",
 };
 
