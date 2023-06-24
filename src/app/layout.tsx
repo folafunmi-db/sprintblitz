@@ -48,7 +48,7 @@ export default function RootLayout({
       <meta name="theme-color" content="#ffffff" />
 			*/}
       <body
-        className={`${poppins.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 `}
+        className={`${poppins.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}

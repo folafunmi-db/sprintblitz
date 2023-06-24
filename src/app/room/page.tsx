@@ -9,7 +9,7 @@ import * as Ably from "ably/promises";
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { copyToClipboard, getCurrentURL } from "@/lib/utils";
+import { copyToClipboard, getCurrentURL, votingPoints } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { v4 } from "uuid";
 
 export default function Room({
   searchParams,
@@ -78,13 +79,15 @@ export default function Room({
   };
 
   React.useEffect(() => {
-    toast({
-      title: "Welcome",
-      description: `${userName} joined the ${roomName}${
-        !roomName?.includes("room") ? " room" : ""
-      }.`,
-      duration: 5000,
-    });
+    if (!(userName && roomId && roomName)) {
+      toast({
+        title: "Welcome",
+        description: `${userName} joined the ${roomName}${
+          !roomName?.includes("room") ? " room" : ""
+        }.`,
+        duration: 5000,
+      });
+    }
   }, [userName, roomName]);
 
   return (
@@ -95,6 +98,16 @@ export default function Room({
           <Balancer>{roomName}</Balancer>
         </div>
         <div className="w-full flex justify-center items-center flex-wrap gap-2">
+          {!true ? (
+            <Button type="button" onClick={() => {}}>
+              Start voting
+            </Button>
+          ) : (
+            <Button type="button" onClick={() => {}}>
+              Reveal votes
+            </Button>
+          )}
+
           <Button
             variant={"outline"}
             type="button"
@@ -154,23 +167,29 @@ export default function Room({
           </Dialog>
         </div>
         <div className="w-full grid auto-rows-auto justify-center align-center">
-          <Button
-            onClick={() => {
-              channel.publish("voted", { text: 1 });
-            }}
-          >
-            1
-          </Button>
           <ul>
             {presenceData.map((msg, index) => (
               <li key={index}>{msg.clientId}</li>
             ))}
           </ul>
-          <ul>
-            {messages.map((msg, index) => (
-              <li key={index}>{msg.data}</li>
-            ))}
-          </ul>
+        </div>
+      </div>
+
+      <div className="top-[100vh] sticky w-full flex-col flex justify-center items-center gap-3">
+        <p className="">Vote here 👇</p>
+        <div className="flex w-full justify-center items-center gap-4">
+          {votingPoints.map((i) => (
+            <Button
+              onClick={() => {
+                channel.publish("voted", { text: i });
+              }}
+              key={v4()}
+              variant="outline"
+              className={`!bg-zinc-900:90 !dark:bg-zinc-50:90`}
+            >
+              {i}
+            </Button>
+          ))}
         </div>
       </div>
     </main>

@@ -20,3 +20,5 @@ export function getCurrentURL() {
     return "";
   }
 }
+
+export const votingPoints = [1, 2, 3, 5, 8, 13, 21, 34];
