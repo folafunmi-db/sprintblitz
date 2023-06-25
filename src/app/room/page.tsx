@@ -117,6 +117,7 @@ export default function Room({
               toast({ description: "Copied room link!", duration: 5000 });
             }}
           >
+            <p>Copy link</p>
             <Copy height={16} width={16} />
           </Button>
 

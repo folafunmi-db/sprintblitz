@@ -7,7 +7,7 @@ export const Nav = () => {
     <div className="w-full flex justify-between items-center">
       <Link
         href={"/"}
-        className="text-xl flex justify-start items-center gap-0 font-medium"
+        className="text-md flex justify-start items-center gap-0 font-medium"
       >
         <Logo showBg={false} /> Sprintly
       </Link>
