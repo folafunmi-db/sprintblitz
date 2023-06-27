@@ -15,7 +15,8 @@ import { MembersType } from "@/store/members";
 import Footer from "@/components/footer";
 import VotersCard from "@/components/voters-card";
 import Lottie from "react-lottie";
-import confetti from "@/lotties/confetti";
+import confetti from "@/lotties/confetti.json";
+import { Types } from "ably";
 
 export default function Room({
   searchParams,
@@ -88,31 +89,37 @@ export default function Room({
     setRevealEstimates(false);
   };
 
+  const [messages, updateMessages] = React.useState<Types.Message[]>([]);
+
   const [channel] = useChannel(roomId as string, (message) => {
-    console.log(members);
-    if (message.name === "clear") {
+    updateMessages((prev) => [...prev, message]);
+  });
+
+  React.useEffect(() => {
+    let message = messages.pop();
+    if (message?.name === "clear") {
       clearEstimates();
-    } else if (message.name === "reveal") {
+    } else if (message?.name === "reveal") {
       setRevealEstimates(true);
     } else if (
-      message.name === "estimated" &&
-      !members.find((item) => item.name === message.clientId)?.name
+      message?.name === "estimated" &&
+      !members.find((item) => item.name === message?.clientId)?.name
     ) {
       console.log("add");
       addMember({
-        estimate: message.data?.text,
-        name: message.clientId,
+        estimate: message?.data?.text,
+        name: message?.clientId,
         role: "member",
         roomId: roomId as string,
       });
     } else if (
-      message.name === "estimated" &&
-      members.find((item) => item.name === message.clientId)?.name
+      message?.name === "estimated" &&
+      members.find((item) => item.name === message?.clientId)?.name
     ) {
-      estimate(message.clientId, message.data?.text);
+      estimate(message?.clientId, message?.data?.text);
       console.log("estimate");
     }
-  });
+  }, [messages]);
 
   const [presenceData] = usePresence(roomId as string);
 
@@ -147,7 +154,6 @@ export default function Room({
   };
 
   const [revealEstimates, setRevealEstimates] = React.useState(false);
-  const [average, setAverage] = React.useState<number | null>(null);
 
   return (
     <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4">
