@@ -105,7 +105,7 @@ export default function Room({
       message?.name === "estimated" &&
       !members.find((item) => item.name === message?.clientId)?.name
     ) {
-      console.log("add");
+      // console.log("add");
       addMember({
         estimate: message?.data?.text,
         name: message?.clientId,
@@ -117,7 +117,7 @@ export default function Room({
       members.find((item) => item.name === message?.clientId)?.name
     ) {
       estimate(message?.clientId, message?.data?.text);
-      console.log("estimate");
+      // console.log("estimate");
     }
   }, [messages]);
 
