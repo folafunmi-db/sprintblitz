@@ -266,7 +266,7 @@ export default function Room({
       {!isModerator && (
         <div className="top-[100vh] sticky mb-12 w-full flex-col flex justify-center items-center gap-3">
           <p className="text-sm">Give your estimate here 👇</p>
-          <div className="flex w-full justify-center items-center gap-4">
+          <div className="flex flex-wrap w-full justify-center items-center gap-4">
             {votingPoints.map((points) => (
               <Button
                 onClick={() => {
