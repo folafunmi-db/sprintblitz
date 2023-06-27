@@ -9,7 +9,7 @@ export const Nav = () => {
         href={"/"}
         className="text-md flex justify-start items-center gap-0 font-medium"
       >
-        <Logo showBg={false} /> Sprintly
+        <Logo showBg={false} /> Sprintblitz
       </Link>
       <ModeToggle />
     </div>
