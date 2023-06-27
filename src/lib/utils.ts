@@ -22,3 +22,10 @@ export function getCurrentURL() {
 }
 
 export const votingPoints = [1, 2, 3, 5, 8, 13, 21, 34];
+
+export const closestPoint = (goal: number) => {
+  const closest = votingPoints.reduce((prev, curr) => {
+    return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
+  });
+  return closest;
+};

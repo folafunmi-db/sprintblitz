@@ -1,5 +1,3 @@
-import { Avatar, AvatarFallback } from "../ui/avatar";
-
 type Props = {
   name: string;
   estimate: string | number;
@@ -14,7 +12,7 @@ const VotersCard: React.FC<Props> = (props) => {
           props.estimate ? "card" : "bg-zinc-300"
         } h-[100px] w-[65px] flex flex-col justify-center items-center text-xs rounded-md p-3`}
       >
-        {props.revealEstimates && (
+        {props.revealEstimates && props.estimate && (
           <div className="text-zinc-800 text-3xl font-semibold p-1 rounded bg-gray-50">
             {props.estimate}
           </div>

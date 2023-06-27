@@ -6,17 +6,22 @@ import { useToast } from "@/components/ui/use-toast";
 import Balancer from "react-wrap-balancer";
 import { Copy } from "lucide-react";
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
+import { Types } from "ably";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { copyToClipboard, getCurrentURL, votingPoints } from "@/lib/utils";
+import {
+  closestPoint,
+  copyToClipboard,
+  getCurrentURL,
+  votingPoints,
+} from "@/lib/utils";
 import { v4 } from "uuid";
 import LeaveRoom from "@/components/modals/leave-room";
 import { MembersType } from "@/store/members";
 import Footer from "@/components/footer";
 import VotersCard from "@/components/voters-card";
-import Lottie from "react-lottie";
+import { Lottie } from "@crello/react-lottie";
 import confetti from "@/lotties/confetti.json";
-import { Types } from "ably";
 
 export default function Room({
   searchParams,
@@ -43,8 +48,8 @@ export default function Room({
   const currentUrl = getCurrentURL();
 
   const joinRoute = `/join?id=${roomId}&name=${roomName}`;
-  const roomRoute = `/room?id=${roomId}&name=${roomName}&user=${userName}`;
-  const roomUrl = `${currentUrl}${roomRoute}`;
+  // const roomRoute = `/room?id=${roomId}&name=${roomName}&user=${userName}`;
+  // const roomUrl = `${currentUrl}${roomRoute}`;
   const joinUrl = `${currentUrl}${joinRoute}`;
 
   React.useEffect(() => {
@@ -198,23 +203,29 @@ export default function Room({
                   onClick={() => {
                     setRevealEstimates(true);
                     channel.publish("reveal", { text: "" });
-                    toast({ title: `Average: ${findAverage()}` });
+                    toast({
+                      title: `Average: ${findAverage()}`,
+                      description: `Closest Point: ${closestPoint(
+                        findAverage()
+                      )}`,
+                    });
                   }}
                   className="relative"
                 >
                   <Lottie
-                    options={{
+                    config={{
                       animationData: confetti,
                       loop: false,
                       autoplay: false,
                     }}
-                    isStopped={!revealEstimates}
+                    // isStopped={!revealEstimates}
+                    playingState={revealEstimates ? "playing" : "stopped"}
                     style={{
                       position: "absolute",
                       pointerEvents: "none",
                     }}
-                    width={200}
-                    height={200}
+                    width={"200px"}
+                    height={"200px"}
                   />
                   Reveal
                 </Button>
