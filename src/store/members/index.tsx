@@ -3,9 +3,10 @@ import { RoomSlice } from "../room";
 import { UserRole } from "../types";
 
 export type MembersType = {
-  id: string | number;
+  roomId: string | number;
   name: string;
   role: UserRole;
+  estimate: number | string;
 };
 
 export type MembersSlice = MembersSliceGeneric<MembersType>;
@@ -13,7 +14,8 @@ export type MembersSlice = MembersSliceGeneric<MembersType>;
 export interface MembersSliceGeneric<T> {
   members: T[];
   addMember: (args: T) => void;
-  removeMember: (id: number | string) => void;
+  estimate: (name: string, estimate: number | string) => void;
+  removeMember: (name: number | string) => void;
 }
 
 export const createMembersSlice: StateCreator<
@@ -26,9 +28,17 @@ export const createMembersSlice: StateCreator<
   addMember: (args) => {
     set((state) => ({ members: [...state.members, args] }));
   },
-  removeMember: (id) => {
+  estimate: (name, estimate) => {
+    set((state) => {
+      const members = state.members;
+      const memberIndex = members.findIndex((item) => item.name === name);
+      members[memberIndex].estimate = estimate;
+      return { members };
+    });
+  },
+  removeMember: (name) => {
     set((state) => ({
-      members: state.members.filter((item) => item.id !== id),
+      members: state.members.filter((item) => item.name !== name),
     }));
   },
 });

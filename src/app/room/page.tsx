@@ -4,21 +4,18 @@ import { Nav } from "@/components/nav";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import Balancer from "react-wrap-balancer";
-import { Copy, LogOut } from "lucide-react";
-import * as Ably from "ably/promises";
+import { Copy } from "lucide-react";
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { copyToClipboard, getCurrentURL, votingPoints } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { v4 } from "uuid";
+import LeaveRoom from "@/components/modals/leave-room";
+import { MembersType } from "@/store/members";
+import Footer from "@/components/footer";
+import VotersCard from "@/components/voters-card";
+import Lottie from "react-lottie";
+import confetti from "@/lotties/confetti";
 
 export default function Room({
   searchParams,
@@ -26,7 +23,13 @@ export default function Room({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const [show, setShow] = React.useState(false);
+  // const members = useGlobalStore((state) => state.members);
+  // const estimate = useGlobalStore((state) => state.estimate);
+  // const addMember = useGlobalStore((state) => state.addMember);
+
+  // const numberOfEstimates =
+  //   members.filter((item) => item.estimate)?.length ?? 0;
+
   const router = useRouter();
 
   const { toast } = useToast();
@@ -34,6 +37,8 @@ export default function Room({
   const roomId = searchParams?.id;
   const roomName = searchParams?.name;
   const userName = searchParams?.user;
+  const isModerator = searchParams?.role === "1";
+
   const currentUrl = getCurrentURL();
 
   const joinRoute = `/join?id=${roomId}&name=${roomName}`;
@@ -52,30 +57,70 @@ export default function Room({
     clientId: userName as string,
   });
 
-  const [messages, updateMessages] = React.useState<
-    Ably.Types.PresenceMessage[]
-  >([]);
+  // const [messages, updateMessages] = React.useState<
+  //   Ably.Types.PresenceMessage[]
+  // >([]);
+  //
+  const [members, setMembers] = React.useState<MembersType[]>([]);
 
-  const [channel, ably] = useChannel(roomId as string, (message) => {
-    console.log(message);
+  const numberOfEstimates =
+    members.filter((item) => item?.estimate)?.length ?? 0;
+
+  const estimate = (name: string, estimate: number | string) => {
+    const innerMembers = members;
+    const memberIndex = innerMembers.findIndex((item) => item.name === name);
+    innerMembers[memberIndex].estimate = estimate;
+    // console.log({ innerMembers });
+    setMembers(innerMembers);
+  };
+
+  const addMember = (args: MembersType) => {
+    setMembers((prev) => [...prev, args]);
+  };
+
+  const clearEstimates = () => {
+    const innerMembers = members;
+    const cleared = innerMembers.map((item) =>
+      item.estimate ? { ...item, estimate: "" } : item
+    );
+
+    setMembers([]);
+    setRevealEstimates(false);
+  };
+
+  const [channel] = useChannel(roomId as string, (message) => {
+    console.log(members);
+    if (message.name === "clear") {
+      clearEstimates();
+    } else if (message.name === "reveal") {
+      setRevealEstimates(true);
+    } else if (
+      message.name === "estimated" &&
+      !members.find((item) => item.name === message.clientId)?.name
+    ) {
+      console.log("add");
+      addMember({
+        estimate: message.data?.text,
+        name: message.clientId,
+        role: "member",
+        roomId: roomId as string,
+      });
+    } else if (
+      message.name === "estimated" &&
+      members.find((item) => item.name === message.clientId)?.name
+    ) {
+      estimate(message.clientId, message.data?.text);
+      console.log("estimate");
+    }
   });
 
-  const [presenceData, updateStatus] = usePresence(
-    roomId as string,
-    (presenceUpdate: any) => {
-      console.log(presenceUpdate);
-    }
-  );
+  const [presenceData] = usePresence(roomId as string);
 
   const handleLeaveClick = async () => {
     channel?.presence.leave();
     channel?.presence.unsubscribe();
     channel?.unsubscribe();
     router.push("/");
-  };
-
-  const handlePresenceMessage = (message: Ably.Types.PresenceMessage) => {
-    updateMessages((prev) => [...prev, message]);
   };
 
   React.useEffect(() => {
@@ -90,109 +135,137 @@ export default function Room({
     }
   }, [userName, roomName]);
 
+  const findEstimate = (name: string) => {
+    const esitmate = members.find((item) => item.name === name)?.estimate ?? "";
+    return esitmate;
+  };
+
+  const findAverage = () => {
+    const length = members.filter((item) => item.role).length ?? "1";
+    const sum = members.reduce((a, b) => a + Number(b.estimate), 0);
+    return sum / length;
+  };
+
+  const [revealEstimates, setRevealEstimates] = React.useState(false);
+  const [average, setAverage] = React.useState<number | null>(null);
+
   return (
     <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4">
       <Nav />
       <div className="w-full flex-col flex justify-center items-center gap-3">
-        <div className="w-full max-w-xl text-6xl my-2 font-bold text-center mx-auto">
-          <Balancer>{roomName}</Balancer>
+        <div className="flex justify-center md:justify-between flex-col md:flex-row items-center w-full gap-2 text-2xl md:text-4xl mt-4 font-bold text-center mx-auto">
+          <div className="max-w-xl w-full md:w-[45%]">
+            <h1 className="truncate w-full hidden md:block text-center md:text-left">
+              {roomName}
+            </h1>
+
+            <Balancer className="truncate block md:!hidden w-full text-center md:text-left">
+              {roomName}
+            </Balancer>
+          </div>
+
+          <div className="flex justify-center md:justify-end items-center gap-2 w-full flex-wrap">
+            <Button
+              variant={"outline"}
+              type="button"
+              className="space-x-1"
+              onClick={() => {
+                copyToClipboard(joinUrl);
+                toast({ description: "Copied room link!", duration: 5000 });
+              }}
+            >
+              <p className="hidden md:block">Copy link</p>
+              <Copy height={16} width={16} />
+            </Button>
+
+            <LeaveRoom handleLeaveClick={handleLeaveClick} />
+          </div>
         </div>
-        <div className="w-full flex justify-center items-center flex-wrap gap-2">
-          {!true ? (
-            <Button type="button" onClick={() => {}}>
-              Start voting
-            </Button>
-          ) : (
-            <Button type="button" onClick={() => {}}>
-              Reveal votes
-            </Button>
-          )}
 
-          <Button
-            variant={"outline"}
-            type="button"
-            className="space-x-1"
-            onClick={() => {
-              copyToClipboard(joinUrl);
-              toast({ description: "Copied room link!", duration: 5000 });
-            }}
-          >
-            <p>Copy link</p>
-            <Copy height={16} width={16} />
-          </Button>
-
-          <Dialog open={show} onOpenChange={setShow}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => {
-                  setShow(true);
-                }}
-                variant={"destructive"}
-                className=""
-              >
-                <LogOut height={16} width={16} className="" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Leave Room</DialogTitle>
-              </DialogHeader>
-              <div className="flex flex-col justify-start items-start gap-4 py-4">
-                <div className="flexjustify-start items-center space-x-2">
-                  <p className="">Are you sure you want to leave?</p>{" "}
-                </div>
-              </div>
-              <DialogFooter className="flex w-full">
+        <div className="w-full flex justify-center items-center flex-col gap-2">
+          <div className="flex justify-center items-center gap-2 flex-wrap">
+            {isModerator && (
+              <div className="flex justify-center items-center flex-wrap space-x-2">
                 <Button
-                  variant={"secondary"}
+                  disabled={numberOfEstimates === 0 || revealEstimates}
                   type="button"
-                  className="flex-1 space-x-1"
                   onClick={() => {
-                    setShow(false);
+                    setRevealEstimates(true);
+                    channel.publish("reveal", { text: "" });
+                    toast({ title: `Average: ${findAverage()}` });
                   }}
+                  className="relative"
                 >
-                  <span>No, I want to stay!</span>
+                  <Lottie
+                    options={{
+                      animationData: confetti,
+                      loop: false,
+                      autoplay: false,
+                    }}
+                    isStopped={!revealEstimates}
+                    style={{
+                      position: "absolute",
+                      pointerEvents: "none",
+                    }}
+                    width={200}
+                    height={200}
+                  />
+                  Reveal
                 </Button>
                 <Button
+                  disabled={numberOfEstimates === 0}
                   variant={"destructive"}
                   type="button"
-                  className="flex-1 space-x-1"
                   onClick={() => {
-                    handleLeaveClick();
+                    clearEstimates();
+                    channel.publish("clear", { text: "" });
                   }}
                 >
-                  <span>Yes, I want to leave!</span>
+                  Clear
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="w-full grid auto-rows-auto justify-center align-center">
-          <ul>
-            {presenceData.map((msg, index) => (
-              <li key={index}>{msg.clientId}</li>
+
+        <div className="w-full my-2">
+          <ul className="w-full grid grid-cols-fit70 gap-4 place-items-center">
+            {presenceData.map((msg) => (
+              <li
+                key={v4()}
+                className="max-w-[70px] flex justify-center items-center"
+              >
+                <VotersCard
+                  name={msg.clientId}
+                  estimate={findEstimate(msg.clientId)}
+                  revealEstimates={revealEstimates}
+                />
+              </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="top-[100vh] sticky w-full flex-col flex justify-center items-center gap-3">
-        <p className="">Vote here 👇</p>
-        <div className="flex w-full justify-center items-center gap-4">
-          {votingPoints.map((i) => (
-            <Button
-              onClick={() => {
-                channel.publish("voted", { text: i });
-              }}
-              key={v4()}
-              variant="outline"
-              className={`!bg-zinc-900:90 !dark:bg-zinc-50:90`}
-            >
-              {i}
-            </Button>
-          ))}
+      {!isModerator && (
+        <div className="top-[100vh] sticky mb-12 w-full flex-col flex justify-center items-center gap-3">
+          <p className="text-sm">Give your estimate here 👇</p>
+          <div className="flex w-full justify-center items-center gap-4">
+            {votingPoints.map((points) => (
+              <Button
+                onClick={() => {
+                  channel.publish("estimated", { text: points });
+                }}
+                key={v4()}
+                variant="outline"
+                className={`!bg-zinc-900:90 !dark:bg-zinc-50:90`}
+              >
+                {points}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+      <Footer />
     </main>
   );
 }

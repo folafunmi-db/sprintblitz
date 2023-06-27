@@ -20,6 +20,7 @@ import { v5 } from "uuid";
 import { copyToClipboard, getCurrentURL } from "@/lib/utils";
 import { ArrowUpRight, Copy, Plus } from "lucide-react";
 import { useGlobalStore } from "@/store";
+import Footer from "@/components/footer";
 
 export default function Home() {
   const router = useRouter();
@@ -32,17 +33,17 @@ export default function Home() {
 
   const roomId = v5(room, v5.URL);
   const joinRoute = `/join?id=${roomId}&name=${room}`;
-  const roomRoute = `/room?id=${roomId}&name=${room}&user=${userName}`;
+  const roomRoute = `/room?id=${roomId}&name=${room}&user=${userName}&role=1`;
   const roomUrl = `${currentUrl}${roomRoute}`;
   const joinUrl = `${currentUrl}${joinRoute}`;
 
   const createRoom = useGlobalStore((state) => state.addRoom);
 
   return (
-    <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4">
+    <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4 pb-0">
       <Nav />
       <div className="w-full flex justify-center items-center gap-3">
-        <div className="w-full max-w-3xl text-6xl my-4 font-bold text-center mx-auto">
+        <div className="w-full max-w-3xl text-6xl mt-4 font-bold text-center mx-auto">
           <div className="mx-auto grid place-items-center">
             <Logo width="200" height="200" showBg={false} />
           </div>
@@ -118,7 +119,7 @@ export default function Home() {
                     <span className="font-normal text-sm">{roomId}</span>
                   </div>
                 </div>
-                <DialogFooter className="flex w-full">
+                <DialogFooter className="flex w-full gap-2">
                   <Button
                     variant={"secondary"}
                     type="button"
@@ -147,6 +148,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Footer />
     </main>
   );
 }
