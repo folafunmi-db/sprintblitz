@@ -32,8 +32,10 @@ export default function Home() {
   const { toast } = useToast();
 
   const roomId = v5(room, v5.URL);
-  const joinRoute = `/join?id=${roomId}&name=${room}`;
-  const roomRoute = `/room?id=${roomId}&name=${room}&user=${userName}&role=1`;
+  const joinRoute = `/join?id=${roomId}&name=${encodeURIComponent(room)}`;
+  const roomRoute = `/room?id=${roomId}&name=${room}&user=${encodeURIComponent(
+    userName
+  )}&role=1`;
   const roomUrl = `${currentUrl}${roomRoute}`;
   const joinUrl = `${currentUrl}${joinRoute}`;
 
@@ -126,7 +128,10 @@ export default function Home() {
                     className="flex-1 space-x-1"
                     onClick={() => {
                       copyToClipboard(joinUrl);
-                      toast({ description: "Copied room link!" });
+                      toast({
+                        description: "Copied room link!",
+                        duration: 2500,
+                      });
                     }}
                   >
                     <span>Copy link</span>

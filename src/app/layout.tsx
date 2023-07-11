@@ -2,6 +2,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import Script from "next/script";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -22,6 +23,26 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <Script
+          id="freshworks-widget"
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.fwSettings={
+						'widget_id':151000004161
+						};
+						!function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}() 
+          `,
+          }}
+        />
+
+        <Script
+          id="freshworks"
+          type="text/javascript"
+          src="https://widget.freshworks.com/widgets/151000004161.js"
+          async
+          defer
+        />
+
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"

@@ -47,7 +47,9 @@ export default function Room({
 
   const currentUrl = getCurrentURL();
 
-  const joinRoute = `/join?id=${roomId}&name=${roomName}`;
+  const joinRoute = `/join?id=${roomId}&name=${encodeURIComponent(
+    roomName as string
+  )}`;
   // const roomRoute = `/room?id=${roomId}&name=${roomName}&user=${userName}`;
   // const roomUrl = `${currentUrl}${roomRoute}`;
   const joinUrl = `${currentUrl}${joinRoute}`;
@@ -152,10 +154,10 @@ export default function Room({
     return esitmate;
   };
 
-  const findAverage = () => {
+  const findAverage = (decimals = 2) => {
     const length = members.filter((item) => item.role).length ?? "1";
     const sum = members.reduce((a, b) => a + Number(b.estimate), 0);
-    return sum / length;
+    return (sum / length).toFixed(decimals);
   };
 
   const [revealEstimates, setRevealEstimates] = React.useState(false);
@@ -182,7 +184,7 @@ export default function Room({
               className="space-x-1"
               onClick={() => {
                 copyToClipboard(joinUrl);
-                toast({ description: "Copied room link!", duration: 5000 });
+                toast({ description: "Copied room link!", duration: 2500 });
               }}
             >
               <p className="hidden md:block">Copy link</p>
@@ -204,9 +206,9 @@ export default function Room({
                     setRevealEstimates(true);
                     channel.publish("reveal", { text: "" });
                     toast({
-                      title: `Average: ${findAverage()}`,
+                      title: `Average: ${findAverage(2)}`,
                       description: `Closest Point: ${closestPoint(
-                        findAverage()
+                        Number(findAverage(2))
                       )}`,
                     });
                   }}
@@ -254,6 +256,7 @@ export default function Room({
               >
                 <VotersCard
                   name={msg.clientId}
+                  currentUserName={userName}
                   estimate={findEstimate(msg.clientId)}
                   revealEstimates={revealEstimates}
                 />
