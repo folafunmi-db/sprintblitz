@@ -256,7 +256,7 @@ export default function Room({
               >
                 <VotersCard
                   name={msg.clientId}
-                  currentUserName={userName}
+                  currentUserName={userName as string}
                   estimate={findEstimate(msg.clientId)}
                   revealEstimates={revealEstimates}
                 />
