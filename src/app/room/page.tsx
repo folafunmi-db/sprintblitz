@@ -168,11 +168,11 @@ export default function Room({
       <div className="w-full flex-col flex justify-center items-center gap-3">
         <div className="flex justify-center md:justify-between flex-col md:flex-row items-center w-full gap-2 text-2xl md:text-4xl mt-4 font-bold text-center mx-auto">
           <div className="max-w-xl w-full md:w-[45%]">
-            <h1 className="truncate w-full hidden md:block text-center md:text-left">
+            <h1 className="truncate leading-[40px] w-full hidden md:block text-center md:text-left">
               {roomName}
             </h1>
 
-            <Balancer className="truncate block md:!hidden w-full text-center md:text-left">
+            <Balancer className="leading-[40px] truncate block md:!hidden w-full text-center md:text-left">
               {roomName}
             </Balancer>
           </div>
@@ -210,6 +210,7 @@ export default function Room({
                       description: `Closest Point: ${closestPoint(
                         Number(findAverage(2))
                       )}`,
+                      duration: Infinity,
                     });
                   }}
                   className="relative"
@@ -220,7 +221,6 @@ export default function Room({
                       loop: false,
                       autoplay: false,
                     }}
-                    // isStopped={!revealEstimates}
                     playingState={revealEstimates ? "playing" : "stopped"}
                     style={{
                       position: "absolute",
