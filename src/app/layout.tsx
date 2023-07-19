@@ -23,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/*
         <Script
           id="freshworks-widget"
           dangerouslySetInnerHTML={{
@@ -42,6 +43,7 @@ export default function RootLayout({
           async
           defer
         />
+				*/}
 
         <link rel="icon" href="/favicon.ico" />
         <link
