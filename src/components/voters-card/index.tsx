@@ -60,7 +60,7 @@ const VotersCard: React.FC<Props> = (props) => {
             onClick={() => {
               props.handleDeleteMember(props.name);
             }}
-            className="absolute top-1 right-1 bg-gray-500 text-white rounded-sm cursor-pointer p-1 w-5 h-5"
+            className="absolute top-1 right-1 bg-gray-500 hover:bg-black transition text-white rounded-[4px] cursor-pointer p-1 w-5 h-5"
           />
         )}
         {props.revealEstimates && props.estimate && (

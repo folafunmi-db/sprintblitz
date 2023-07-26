@@ -22,8 +22,6 @@ import Footer from "@/components/footer";
 import VotersCard from "@/components/voters-card";
 import { Lottie } from "@crello/react-lottie";
 import confetti from "@/lotties/confetti.json";
-import { clear } from "console";
-import { Itim } from "next/font/google";
 
 export default function Room({
   searchParams,
@@ -67,10 +65,6 @@ export default function Room({
     clientId: userName as string,
   });
 
-  // const [messages, updateMessages] = React.useState<
-  //   Ably.Types.PresenceMessage[]
-  // >([]);
-  //
   const [members, setMembers] = React.useState<MembersType[]>([]);
 
   const numberOfEstimates =
@@ -97,9 +91,9 @@ export default function Room({
     setMembers(newMembers);
 
     if (userName === name) {
-      router.push("/?action=removed");
+      router.push("/");
       toast({
-        title: "You were removed by the admin",
+        title: "You were removed by the moderator",
         duration: Infinity,
       });
     }
@@ -133,27 +127,25 @@ export default function Room({
         setRevealEstimates(true);
         break;
       case "estimated":
-        if (
-          message?.clientId &&
-          !members.find((item) => item.name === message?.clientId)?.name
-        ) {
-          addMember({
-            estimate: message?.data?.text,
-            name: message?.clientId,
-            role: "member",
-            roomId: roomId as string,
-          });
+        if (message?.clientId) {
+          if (!members.find((item) => item.name === message?.clientId)?.name) {
+            addMember({
+              estimate: message?.data?.text,
+              name: message?.clientId,
+              role: "member",
+              roomId: roomId as string,
+            });
+          }
+          if (members.find((item) => item.name === message?.clientId)?.name) {
+            estimate(message?.clientId, message?.data?.text);
+          }
         }
-        if (
-          message?.clientId &&
-          members.find((item) => item.name === message?.clientId)?.name
-        ) {
-          estimate(message?.clientId, message?.data?.text);
-        }
+        break;
       case "delete":
         deleteMember({
           name: message?.data?.text,
         });
+        break;
       default:
         break;
     }
