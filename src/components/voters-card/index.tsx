@@ -17,6 +17,8 @@ type Props = {
   currentUserName: string;
   estimate: string | number;
   revealEstimates: boolean;
+  handleDeleteMember: (name: string) => void;
+  isModerator: boolean;
 };
 
 const VotersCard: React.FC<Props> = (props) => {
@@ -53,9 +55,14 @@ const VotersCard: React.FC<Props> = (props) => {
           props.estimate ? "card" : "bg-zinc-300"
         } h-[100px] w-[80px] flex relative flex-col justify-center items-center text-xs rounded-md p-3`}
       >
-        {/*
-			<Trash2 className="absolute" />
-			*/}
+        {props.isModerator && props.name !== props.currentUserName && (
+          <Trash2
+            onClick={() => {
+              props.handleDeleteMember(props.name);
+            }}
+            className="absolute top-1 right-1 bg-gray-500 text-white rounded-sm cursor-pointer p-1 w-5 h-5"
+          />
+        )}
         {props.revealEstimates && props.estimate && (
           <div className="text-zinc-800 text-3xl font-semibold p-1 rounded bg-gray-50">
             {props.estimate}

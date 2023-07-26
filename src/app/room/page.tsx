@@ -22,6 +22,8 @@ import Footer from "@/components/footer";
 import VotersCard from "@/components/voters-card";
 import { Lottie } from "@crello/react-lottie";
 import confetti from "@/lotties/confetti.json";
+import { clear } from "console";
+import { Itim } from "next/font/google";
 
 export default function Room({
   searchParams,
@@ -78,7 +80,7 @@ export default function Room({
     const innerMembers = members;
     const memberIndex = innerMembers.findIndex((item) => item.name === name);
     innerMembers[memberIndex].estimate = estimate;
-    // console.log({ innerMembers });
+
     setMembers(innerMembers);
   };
 
@@ -86,11 +88,28 @@ export default function Room({
     setMembers((prev) => [...prev, args]);
   };
 
+  const handleDeleteMember = (name: string) => {
+    channel.publish("delete", { text: name });
+  };
+
+  const deleteMember = ({ name }: { name: string }) => {
+    const newMembers = members.filter((item) => item?.name === name);
+    setMembers(newMembers);
+
+    if (userName === name) {
+      router.push("/?action=removed");
+      toast({
+        title: "You were removed by the admin",
+        duration: Infinity,
+      });
+    }
+  };
+
   const clearEstimates = () => {
-    const innerMembers = members;
-    const cleared = innerMembers.map((item) =>
-      item.estimate ? { ...item, estimate: "" } : item
-    );
+    // const innerMembers = members;
+    // const cleared = innerMembers.map((item) =>
+    //   item.estimate ? { ...item, estimate: "" } : item
+    // );
 
     setMembers([]);
     setRevealEstimates(false);
@@ -104,27 +123,39 @@ export default function Room({
 
   React.useEffect(() => {
     let message = messages.pop();
-    if (message?.name === "clear") {
-      clearEstimates();
-    } else if (message?.name === "reveal") {
-      setRevealEstimates(true);
-    } else if (
-      message?.name === "estimated" &&
-      !members.find((item) => item.name === message?.clientId)?.name
-    ) {
-      // console.log("add");
-      addMember({
-        estimate: message?.data?.text,
-        name: message?.clientId,
-        role: "member",
-        roomId: roomId as string,
-      });
-    } else if (
-      message?.name === "estimated" &&
-      members.find((item) => item.name === message?.clientId)?.name
-    ) {
-      estimate(message?.clientId, message?.data?.text);
-      // console.log("estimate");
+    let messageName = message?.name ?? "";
+
+    switch (messageName) {
+      case "clear":
+        clearEstimates();
+        break;
+      case "reveal":
+        setRevealEstimates(true);
+        break;
+      case "estimated":
+        if (
+          message?.clientId &&
+          !members.find((item) => item.name === message?.clientId)?.name
+        ) {
+          addMember({
+            estimate: message?.data?.text,
+            name: message?.clientId,
+            role: "member",
+            roomId: roomId as string,
+          });
+        }
+        if (
+          message?.clientId &&
+          members.find((item) => item.name === message?.clientId)?.name
+        ) {
+          estimate(message?.clientId, message?.data?.text);
+        }
+      case "delete":
+        deleteMember({
+          name: message?.data?.text,
+        });
+      default:
+        break;
     }
   }, [messages]);
 
@@ -259,6 +290,8 @@ export default function Room({
                   currentUserName={userName as string}
                   estimate={findEstimate(msg.clientId)}
                   revealEstimates={revealEstimates}
+                  handleDeleteMember={handleDeleteMember}
+                  isModerator={isModerator}
                 />
               </li>
             ))}
