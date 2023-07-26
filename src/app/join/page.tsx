@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import Balancer from "react-wrap-balancer";
 import * as React from "react";
-import Link from "next/link";
 import { DoorOpen, LogIn } from "lucide-react";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
