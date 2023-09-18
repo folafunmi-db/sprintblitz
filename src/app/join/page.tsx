@@ -71,6 +71,7 @@ export default function Join({
             <Button
               type="button"
               className="flex-1 space-x-1"
+              disabled={!username}
               onClick={() => {
                 handleJoin();
               }}

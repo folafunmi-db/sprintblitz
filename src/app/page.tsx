@@ -86,7 +86,7 @@ export default function Home() {
                   <Button
                     className="space-x-1"
                     type="button"
-                    disabled={!room}
+                    disabled={!room || !userName}
                     onClick={() => {
                       createRoom({
                         closedAt: null,
