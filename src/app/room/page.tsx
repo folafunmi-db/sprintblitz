@@ -105,6 +105,7 @@ export default function Room({
     //   item.estimate ? { ...item, estimate: "" } : item
     // );
 
+    setMyPoint(0);
     setMembers([]);
     setRevealEstimates(false);
   };
@@ -184,6 +185,8 @@ export default function Room({
   };
 
   const [revealEstimates, setRevealEstimates] = React.useState(false);
+
+  const [myPoint, setMyPoint] = React.useState(0);
 
   return (
     <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4">
@@ -292,19 +295,30 @@ export default function Room({
       </div>
 
       {!isModerator && (
-        <div className="top-[100vh] sticky mb-12 w-full flex-col flex justify-center items-center gap-3">
-          <p className="text-sm">Give your estimate here 👇</p>
+        <div className="top-[80vh] sticky mb-12 w-full flex-col flex justify-center items-center gap-3">
+          <p className="text-sm">
+            {!!myPoint
+              ? `You voted for ${myPoint} points`
+              : "Give your estimate here"}{" "}
+            👇
+          </p>
           <div className="flex flex-wrap w-full justify-center items-center gap-4">
-            {votingPoints.map((points) => (
+            {votingPoints.map((point) => (
               <Button
                 onClick={() => {
-                  channel.publish("estimated", { text: points });
+                  channel.publish("estimated", { text: point });
+                  setMyPoint(point);
                 }}
+                disabled={revealEstimates}
                 key={v4()}
                 variant="outline"
-                className={`!bg-zinc-900:90 !dark:bg-zinc-50:90`}
+                className={
+                  myPoint === point
+                    ? "!bg-zinc-900 dark:!bg-zinc-200 !text-zinc-50 dark:!text-zinc-800"
+                    : "!bg-zinc-900:90 dark:!bg-zinc-50:90"
+                }
               >
-                {points}
+                {point}
               </Button>
             ))}
           </div>
