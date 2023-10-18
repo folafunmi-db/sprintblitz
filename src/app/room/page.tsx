@@ -193,7 +193,7 @@ export default function Room({
       <Nav />
       <div className="w-full flex-col flex justify-center items-center gap-3">
         <div className="flex justify-center md:justify-between flex-col md:flex-row items-center w-full gap-2 text-2xl md:text-4xl mt-4 font-bold text-center mx-auto">
-          <div className="max-w-xl w-full md:w-[45%]">
+          <div className="max-w-xl md:max-w-4xl w-full">
             <h1 className="overflow-x-hidden text-ellipsis leading-[55px] w-full hidden md:block text-center md:text-left">
               {roomName}
             </h1>
