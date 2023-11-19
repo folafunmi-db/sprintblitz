@@ -24,11 +24,14 @@ export default function RootLayout({
   return (
     <>
       <HighlightInit
+        environment={process.env.NODE_ENV}
+        manualStart={process.env.NODE_ENV === "development" ? true : false}
         projectId={CONSTANTS.NEXT_PUBLIC_HIGHLIGHT_PROJECT_ID}
         tracingOrigins
         networkRecording={{
-          enabled: true,
-          recordHeadersAndBody: true,
+          enabled: process.env.NODE_ENV === "development" ? false : true,
+          recordHeadersAndBody:
+            process.env.NODE_ENV === "development" ? false : true,
         }}
         // backendUrl={CONSTANTS.NEXT_PUBLIC_HIGHLIGHT_BACKEND_URL}
       />

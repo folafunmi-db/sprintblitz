@@ -48,13 +48,13 @@ export default function Join({
       <Nav />
       <div className="w-full flex justify-center items-center gap-3">
         <div className="w-full max-w-3xl mt-2 text-center mx-auto">
-          <Balancer className="text-4xl font-bold">
+          <Balancer className="text-2xl md:text-4xl font-bold">
             Join the {roomName} {!roomName?.includes("room") && " room"}.
             <br />
             What&apos;s your name?
           </Balancer>
 
-          <div className="mx-auto mt-10 mb-0 flex w-full max-w-sm items-center space-x-2">
+          <div className="mx-auto mt-10 mb-0 flex w-full max-w-sm items-center flex-col md:flex-row gap-2">
             <Input
               name="your-name"
               placeholder="Your name"
@@ -70,7 +70,7 @@ export default function Join({
             />
             <Button
               type="button"
-              className="flex-1 space-x-1"
+              className="flex-1 space-x-1 w-full md:w-auto"
               disabled={!username}
               onClick={() => {
                 handleJoin();

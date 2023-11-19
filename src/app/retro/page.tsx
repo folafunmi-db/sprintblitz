@@ -26,7 +26,6 @@ import { ErrorBoundary } from "@highlight-run/react";
 export default function Home() {
   const router = useRouter();
   const [room, setRoom] = React.useState("");
-  const [userName, setUserName] = React.useState("");
   const [show, setShow] = React.useState(false);
 
   const currentUrl = getCurrentURL();
@@ -34,9 +33,7 @@ export default function Home() {
 
   const roomId = v5(room, v5.URL);
   const joinRoute = `/join?id=${roomId}&name=${encodeURIComponent(room)}`;
-  const roomRoute = `/room?id=${roomId}&name=${room}&user=${encodeURIComponent(
-    userName
-  )}&role=1`;
+  const roomRoute = `/room?id=${roomId}&name=${room}`;
   const roomUrl = `${currentUrl}${roomRoute}`;
   const joinUrl = `${currentUrl}${joinRoute}`;
 
@@ -45,28 +42,16 @@ export default function Home() {
   return (
     <ErrorBoundary>
       <main className="text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950 flex min-h-screen flex-col items-center justify-start p-4 pb-0">
-        <Nav />
+        <Nav page="retro" />
         <div className="w-full flex justify-center items-center gap-3">
           <div className="w-full max-w-3xl text-3xl md:text-6xl mt-4 font-bold text-center mx-auto">
             <div className="mx-auto grid place-items-center">
               <Logo width="200" height="200" showBg={false} />
             </div>
-            <Balancer>Planning a sprint? Create a room here!</Balancer>
+            <Balancer>
+              Done with a sprint? Planning a Retro? Create a room here!
+            </Balancer>
             <div className="mx-auto my-10 flex flex-col md:flex-row w-full max-w-md items-center gap-2">
-              <Input
-                name="user-name"
-                placeholder="Your name"
-                value={userName}
-                onChange={(e) => {
-                  setUserName(e.target.value);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !!userName && !!room) {
-                    setShow(true);
-                  }
-                }}
-              />
-
               <Input
                 name="room-name"
                 placeholder="Room name"
@@ -75,7 +60,7 @@ export default function Home() {
                   setRoom(e.target.value);
                 }}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" && !!userName && !!room) {
+                  if (event.key === "Enter" && !!room) {
                     setShow(true);
                   }
                 }}
@@ -86,7 +71,7 @@ export default function Home() {
                   <Button
                     className="space-x-1 w-full md:w-auto"
                     type="button"
-                    disabled={!room || !userName}
+                    disabled={!room}
                     onClick={() => {
                       createRoom({
                         closedAt: null,
@@ -110,10 +95,6 @@ export default function Home() {
                     <DialogTitle>Room Details</DialogTitle>
                   </DialogHeader>
                   <div className="flex flex-col justify-start items-start gap-4 py-4">
-                    <div className="flex font-semibold justify-start items-center space-x-2">
-                      <p className="whitespace-nowrap">Your name:</p>{" "}
-                      <span className="font-normal text-sm">{userName}</span>
-                    </div>
                     <div className="flex font-semibold justify-start items-center space-x-2">
                       <p className="whitespace-nowrap">Room name:</p>{" "}
                       <span className="font-normal text-sm">{room}</span>
