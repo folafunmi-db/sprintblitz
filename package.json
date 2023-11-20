@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "introspect": "drizzle-kit introspect:sqlite",
-    "generate": "drizzle-kit generate:sqlite",
-    "studio": "drizzle-kit studio"
+    "generate": "drizzle-kit generate:sqlite --out ./drizzle/migrations --breakpoints --schema=src/app/db/schema.ts",
+    "migrate": "tsx src/db/migrate",
+    "studio": "drizzle-kit studio --port 3333"
   },
   "dependencies": {
     "@ably-labs/react-hooks": "^2.1.1",
@@ -55,6 +56,8 @@
   "devDependencies": {
     "@types/react-lottie": "^1.2.6",
     "@types/uuid": "^9.0.2",
-    "drizzle-kit": "^0.20.4"
+    "dotenv": "^16.3.1",
+    "drizzle-kit": "^0.20.4",
+    "tsx": "^4.1.4"
   }
 }
