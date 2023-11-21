@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "introspect": "drizzle-kit introspect:sqlite",
-    "generate": "drizzle-kit generate:sqlite --out ./drizzle/migrations --breakpoints --schema=src/app/db/schema.ts",
+    "generate": "drizzle-kit generate:sqlite --out ./drizzle/migrations --breakpoints --schema=src/db/schema.ts",
     "migrate": "tsx src/db/migrate",
     "studio": "drizzle-kit studio --port 3333"
   },
@@ -36,11 +36,9 @@
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "drizzle-orm": "^0.29.0",
-    "eslint": "8.43.0",
-    "eslint-config-next": "13.4.7",
     "highlight.run": "^7.3.11",
     "lucide-react": "^0.248.0",
-    "next": "13.4.7",
+    "next": "13.5.5",
     "next-themes": "^0.2.1",
     "postcss": "8.4.24",
     "react": "18.2.0",
@@ -58,6 +56,8 @@
     "@types/uuid": "^9.0.2",
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.20.4",
+    "eslint": "8.43.0",
+    "eslint-config-next": "13.5.5",
     "tsx": "^4.1.4"
   }
 }

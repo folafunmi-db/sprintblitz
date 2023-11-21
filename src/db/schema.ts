@@ -17,8 +17,9 @@ export const posts = sqliteTable("posts", {
   id: integer("id").notNull().primaryKey({ autoIncrement: true }),
   roomId: integer("room_id").notNull(),
   body: text("body").notNull(),
-  userName: text("user_name").notNull(),
-  stage: integer("stage").notNull().default(0),
+  authorName: text("author_name"),
+  stage: integer("stage").notNull().default(1),
+  votes: integer("votes").notNull().default(0),
   updatedAt: text("updated_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -36,6 +37,7 @@ export const comments = sqliteTable("comments", {
   id: integer("id").notNull().primaryKey({ autoIncrement: true }),
   body: text("body"),
   postId: integer("post_id"),
+  votes: integer("votes").notNull().default(0),
   updatedAt: text("updated_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),

@@ -101,8 +101,8 @@ export default function Home() {
                       });
                     }}
                   >
-                    <span>Create </span>
                     <Plus height={16} width={16} />
+                    <span>Create </span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
@@ -136,8 +136,8 @@ export default function Home() {
                         });
                       }}
                     >
-                      <span>Copy link</span>
                       <Copy height={16} width={16} />
+                      <span>Copy link</span>
                     </Button>
                     <Button
                       type="button"
@@ -146,8 +146,8 @@ export default function Home() {
                         router.push(roomRoute);
                       }}
                     >
-                      <span>Go to room</span>
                       <ArrowUpRight height={16} width={16} />
+                      <span>Go to room</span>
                     </Button>
                   </DialogFooter>
                 </DialogContent>

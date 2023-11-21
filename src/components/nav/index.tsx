@@ -7,6 +7,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
+import { ClipboardEdit, Footprints } from "lucide-react";
 
 type NavProps = {
   page?: string;
@@ -21,21 +22,27 @@ export const Nav = ({ page }: NavProps) => {
       >
         <Logo showBg={false} /> <p className="hidden md:block">Sprintblitz</p>
       </Link>
-      <div className="flex justify-end items-center">
+      <div className="flex gap-2 justify-end items-center">
         <NavigationMenu>
           {page === "retro" ? (
             <NavigationMenuItem className="list-none">
               <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Plan a Sprint instead?
+                <NavigationMenuLink
+                  className={`space-x-2 ${navigationMenuTriggerStyle()}`}
+                >
+                  <Footprints />
+                  <span>Plan a Sprint instead?</span>
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
           ) : (
             <NavigationMenuItem className="list-none">
               <Link href="/retro" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Have a Retro instead?
+                <NavigationMenuLink
+                  className={`space-x-2 ${navigationMenuTriggerStyle()}`}
+                >
+                  <ClipboardEdit />
+                  <span>Have a Retro instead?</span>
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
