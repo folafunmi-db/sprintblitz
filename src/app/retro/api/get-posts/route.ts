@@ -1,4 +1,4 @@
-import { db } from "@/db/migrate";
+import { db } from "@/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
