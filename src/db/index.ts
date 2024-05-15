@@ -1,7 +1,10 @@
-import "dotenv/config";
+// import "dotenv/config";
+import * as dotenv from "dotenv";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 import { createClient } from "@libsql/client";
+
+dotenv.config();
 
 export const client = createClient(
   process.env.NODE_ENV === "development"

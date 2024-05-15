@@ -1,8 +1,13 @@
+import { randomUUID } from "crypto";
 import { relations, sql } from "drizzle-orm";
 import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
 
+const uuidLength = 5;
+
 export const rooms = sqliteTable("rooms", {
-  id: integer("id").notNull().primaryKey({ autoIncrement: true }),
+  id: text("id", { length: uuidLength })
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
   name: text("name").notNull(),
   createdAt: text("created_at")
     .notNull()
@@ -14,8 +19,12 @@ export const roomsRelations = relations(rooms, ({ many }) => ({
 }));
 
 export const posts = sqliteTable("posts", {
-  id: integer("id").notNull().primaryKey({ autoIncrement: true }),
-  roomId: integer("room_id").notNull(),
+  id: text("id", { length: uuidLength })
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
+  roomId: text("room_id", { length: uuidLength }).$defaultFn(() =>
+    randomUUID()
+  ),
   body: text("body").notNull(),
   authorName: text("author_name"),
   stage: integer("stage").notNull().default(1),
@@ -34,9 +43,13 @@ export const postRelations = relations(posts, ({ one, many }) => ({
 }));
 
 export const comments = sqliteTable("comments", {
-  id: integer("id").notNull().primaryKey({ autoIncrement: true }),
+  id: text("id", { length: uuidLength })
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
   body: text("body"),
-  postId: integer("post_id"),
+  postId: text("post_id", { length: uuidLength }).$defaultFn(() =>
+    randomUUID()
+  ),
   votes: integer("votes").notNull().default(0),
   updatedAt: text("updated_at")
     .notNull()
