@@ -21,27 +21,26 @@ import { ArrowUpRight, Copy, Loader2, Plus } from "lucide-react";
 import Footer from "@/components/footer";
 import { ErrorBoundary } from "@highlight-run/react";
 
-type RoomData = {
-  id: number;
-  name: string;
-} | null;
+type RoomData =
+  | {
+      isError: false;
+      id: number;
+      name: string;
+    }
+  | { isError: true; error: string }
+  | null;
 
-export default function Home() {
+export default function Retro() {
   const router = useRouter();
   const [room, setRoom] = React.useState("");
   const [show, setShow] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [roomData, setRoomData] = React.useState<RoomData>(null);
+  const [roomRoute, setRoomRoute] = React.useState("");
+  const [joinUrl, setJoinUrl] = React.useState("");
 
   const currentUrl = getCurrentURL();
   const { toast } = useToast();
-
-  const joinRoute = `/join?id=${roomData?.id}&name=${encodeURIComponent(
-    roomData?.name ?? ""
-  )}`;
-  const roomRoute = `/room?id=${roomData?.id}&name=${roomData?.name}`;
-  // const roomUrl = `${currentUrl}${roomRoute}`;
-  const joinUrl = `${currentUrl}${joinRoute}`;
 
   const handleCreateRoom = async () => {
     setLoading(true);
@@ -52,11 +51,28 @@ export default function Home() {
           name: room,
         }),
       });
+
       const data: RoomData = await res.json();
-      setRoomData(data);
-      setShow(true);
+
+      setLoading(false);
+
+      if (process.env.NODE_ENV === "development") {
+        console.log(data);
+      }
+
+      if (data?.isError) {
+        toast({
+          description: data?.error,
+          duration: 2500,
+        });
+      } else {
+        setRoomData(data);
+        setRoomRoute(`/room?id=${data?.id}`);
+        setJoinUrl(`${currentUrl}/room?id=${data?.id}`);
+
+        setShow(true);
+      }
     } catch (error) {
-      setRoomData(null);
       setLoading(false);
     }
   };
@@ -86,29 +102,28 @@ export default function Home() {
                 }}
               />
 
+              <Button
+                className="space-x-1 w-full md:w-auto"
+                type="button"
+                disabled={loading || !room}
+                onClick={() => {
+                  handleCreateRoom();
+                }}
+              >
+                {loading ? (
+                  <>
+                    <span className="whitespace-nowrap">Wait</span>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    <Plus height={16} width={16} />
+                    <span>Create </span>
+                  </>
+                )}
+              </Button>
               <Dialog open={show} onOpenChange={setShow}>
-                <DialogTrigger asChild disabled={!room}>
-                  <Button
-                    className="space-x-1 w-full md:w-auto"
-                    type="button"
-                    disabled={loading || !room}
-                    onClick={() => {
-                      handleCreateRoom();
-                    }}
-                  >
-                    {loading ? (
-                      <>
-                        <span>Please wait</span>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      </>
-                    ) : (
-                      <>
-                        <Plus height={16} width={16} />
-                        <span>Create </span>
-                      </>
-                    )}
-                  </Button>
-                </DialogTrigger>
+                <DialogTrigger asChild disabled={!room}></DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>Room Details</DialogTitle>
@@ -117,13 +132,13 @@ export default function Home() {
                     <div className="flex font-semibold justify-start items-center space-x-2">
                       <p className="whitespace-nowrap">Room name:</p>{" "}
                       <span className="font-normal text-sm">
-                        {roomData?.name ?? "Unavailable"}
+                        {!roomData?.isError ? roomData?.name : "Unavailable"}
                       </span>
                     </div>
                     <div className="flex font-semibold justify-start items-center space-x-2">
                       <p className="whitespace-nowrap">Room ID:</p>{" "}
                       <span className="font-normal text-sm">
-                        {roomData?.id ?? "Unavailable"}
+                        {!roomData?.isError ? roomData?.id : "Unavailable"}
                       </span>
                     </div>
                   </div>
