@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/toaster";
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -86,6 +87,7 @@ export default function RootLayout({
             {children}
             <Toaster />
           </ThemeProvider>
+          <Analytics />
         </body>
       </html>
     </>
