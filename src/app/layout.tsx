@@ -59,19 +59,15 @@ export default function RootLayout({
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
 
-          <Script
-            id="clarity"
-            type="text/javascript"
-            dangerouslySetInnerHTML={{
-              __html: `
+          <Script id="clarity-script" strategy="afterInteractive">
+            {`
               (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               })(window, document, "clarity", "script", "ngwrleyjo7");
-            `,
-            }}
-          />
+          `}
+          </Script>
         </head>
         <body
           className={`${poppins.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950`}
