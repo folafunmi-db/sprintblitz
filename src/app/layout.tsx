@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { HighlightInit } from "@highlight-run/next/highlight-init";
 import { CONSTANTS } from "@/lib/constants";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -80,6 +81,7 @@ export default function RootLayout({
             <Toaster />
           </ThemeProvider>
           <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </>
