@@ -5,6 +5,7 @@ import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HighlightInit } from "@highlight-run/next/highlight-init";
 import { CONSTANTS } from "@/lib/constants";
+import Script from "next/script";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -57,13 +58,20 @@ export default function RootLayout({
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
-          <script type="text/javascript">
-            {`(function(c,l,a,r,i,t,y){
-									c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-									t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-									y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-							})(window, document, "clarity", "script", "ngwrleyjo7");`}
-          </script>
+
+          <Script
+            id="clarity"
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "ngwrleyjo7");
+            `,
+            }}
+          />
         </head>
         <body
           className={`${poppins.className} text-zinc-800 dark:text-zinc-100 bg-zinc-50 dark:bg-zinc-950`}
